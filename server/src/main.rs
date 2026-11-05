@@ -55,6 +55,14 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use stelly_core::api::Scope;
 
+/// Libraries of gigabytes in small pieces, read on one blocking thread while
+/// the last is still answered from, then let go: glibc's malloc keeps what
+/// they leave in its arenas, and the server grew by half a library a read
+/// until the machine swapped to a halt. jemalloc gives it back.
+#[cfg(target_os = "linux")]
+#[global_allocator]
+static ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
 const DEFAULT_BIND: &str = "127.0.0.1:7700";
 
 #[derive(Clone)]

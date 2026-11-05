@@ -59,3 +59,6 @@ secular = { version = "1.0.1", features = ["bmp", "normalization"] }
 # Linux only.
 [target.'cfg(target_os = "linux")'.dependencies]
 libc = "0.2"
+# The allocator: glibc's kept every mix library read again after a dedupe
+# spread over its per-thread arenas, never given back, 24GB in ten hours.
+tikv-jemallocator = "0.6.1"
